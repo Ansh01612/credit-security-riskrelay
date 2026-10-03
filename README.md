@@ -36,8 +36,8 @@ services are needed.
 
 Vercel serves a lightweight web frontend and a FastAPI prediction function; the
 Streamlit app remains available for local use. The Vercel function uses the
-root [`pyproject.toml`](./pyproject.toml) dependencies and loads the trained
-pipeline from `credit risk modeling/credit_risk_pipeline.joblib`.
+root [`requirements.txt`](./requirements.txt) and loads the trained pipeline
+from `credit risk modeling/credit_risk_pipeline.joblib`.
 
 To deploy with the Vercel CLI from the repository root:
 
@@ -46,9 +46,9 @@ npx vercel
 npx vercel --prod
 ```
 
-Follow the CLI prompts to sign in and link the project. Keep the Vercel project
-root set to the repository root so it can find `vercel_app.py`, `pyproject.toml`,
-`vercel.json`, the `public` frontend, and the model artifact. The live prediction
+Follow the CLI prompts to sign in and link the project. Keep the Vercel project root set to the repository root so it can find
+`main.py`, `vercel_app.py`, `requirements.txt`, `vercel.json`, the `public`
+frontend, and the model artifact. The live prediction
 API is `POST /api/predict`; interactive API documentation is available at
 `/docs`.
 

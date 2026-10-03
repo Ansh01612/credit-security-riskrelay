@@ -1,4 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "functions": {
+    "main.py": {
+      "excludeFiles": "{.venv/**,.vercel/**,public/**,credit risk modeling/*.ipynb,credit risk modeling/*.pkl,credit risk modeling/*.csv,credit risk modeling/train_model.py}"
+    }
+  }
 }

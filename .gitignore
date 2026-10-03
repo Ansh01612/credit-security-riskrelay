@@ -1,5 +1,8 @@
 .venv/
+_uv/
 __pycache__/
 *.py[cod]
 .streamlit/secrets.toml
 .vercel/
+.vercel
+.env*
