@@ -32,6 +32,26 @@ The dependency file is next to the app at
 The model and encoder files are loaded relative to `app.py`; no secrets or external
 services are needed.
 
+## Deploy to Vercel
+
+Vercel serves a lightweight web frontend and a FastAPI prediction function; the
+Streamlit app remains available for local use. The Vercel function uses the
+root [`pyproject.toml`](./pyproject.toml) dependencies and loads the trained
+pipeline from `credit risk modeling/credit_risk_pipeline.joblib`.
+
+To deploy with the Vercel CLI from the repository root:
+
+```powershell
+npx vercel
+npx vercel --prod
+```
+
+Follow the CLI prompts to sign in and link the project. Keep the Vercel project
+root set to the repository root so it can find `vercel_app.py`, `pyproject.toml`,
+`vercel.json`, the `public` frontend, and the model artifact. The live prediction
+API is `POST /api/predict`; interactive API documentation is available at
+`/docs`.
+
 ## Model notes
 
 The Extra Trees model expects nine inputs: `Age`, `Sex`, `Job`, `Housing`,

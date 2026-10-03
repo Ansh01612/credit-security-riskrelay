@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#102e38" />
+    <meta
+      name="description"
+      content="Explore a credit risk estimate with the Risk Relay demonstration model."
+    />
+    <title>CreditLens | Risk Relay</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #182b36;
+        --muted: #687b83;
+        --teal: #087f78;
+        --line: #e4eceb;
+        --paper: #f5f8f7;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      .shell { width: min(1020px, calc(100% - 36px)); margin: 34px auto; }
+      .hero {
+        padding: clamp(26px, 5vw, 48px);
+        border-radius: 22px;
+        color: #f6fffc;
+        background: linear-gradient(115deg, #102e38, #075e62 62%, #138c7c);
+        box-shadow: 0 16px 38px #123d4324;
+      }
+      .eyebrow {
+        color: #9cddd0;
+        font-size: .75rem;
+        font-weight: 750;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+      }
+      h1, h2 { font-family: ui-sans-serif, system-ui, sans-serif; letter-spacing: -.04em; }
+      h1 { max-width: 650px; margin: 12px 0 8px; font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.08; }
+      .hero p { max-width: 660px; margin: 0; color: #d2e9e5; line-height: 1.6; }
+      .panel {
+        margin-top: 22px;
+        padding: clamp(20px, 4vw, 34px);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 5px 20px #1b36390a;
+      }
+      h2 { margin: 0 0 6px; font-size: 1.45rem; }
+      .subhead { margin: 0 0 24px; color: var(--muted); }
+      .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+      label { display: grid; gap: 7px; font-size: .91rem; font-weight: 650; }
+      input, select {
+        width: 100%;
+        min-height: 46px;
+        padding: 10px 12px;
+        border: 1px solid #d8e2e0;
+        border-radius: 9px;
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+      }
+      input:focus, select:focus { outline: 3px solid #087f7822; border-color: var(--teal); }
+      .actions { display: flex; align-items: center; gap: 14px; margin-top: 24px; }
+      button {
+        min-height: 48px;
+        padding: 0 21px;
+        border: 0;
+        border-radius: 10px;
+        background: var(--teal);
+        color: white;
+        font: inherit;
+        font-weight: 750;
+        cursor: pointer;
+      }
+      button:hover { background: #066a65; }
+      button:disabled { cursor: wait; opacity: .65; }
+      .status { color: var(--muted); font-size: .9rem; }
+      .result { display: none; margin-top: 22px; }
+      .result.show { display: block; }
+      .result-card {
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-top: 4px solid var(--teal);
+        border-radius: 14px;
+        background: #fbfdfc;
+      }
+      .result-card.bad { border-top-color: #d87558; }
+      .result-label { color: var(--muted); font-size: .8rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+      .result-value { margin: 7px 0; font-size: 2rem; font-weight: 800; letter-spacing: -.04em; }
+      .probabilities { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 12px; color: var(--muted); }
+      .bar { height: 9px; margin-top: 16px; overflow: hidden; border-radius: 99px; background: #e5ecea; }
+      .bar span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--teal); transition: width .25s ease; }
+      .bad + .bar span { background: #d87558; }
+      .error { display: none; margin-top: 16px; padding: 12px 14px; border-radius: 9px; background: #fff1ed; color: #8c341f; }
+      .error.show { display: block; }
+      .disclaimer { margin: 18px 4px; color: var(--muted); font-size: .82rem; line-height: 1.6; }
+      @media (max-width: 640px) {
+        .shell { width: min(100% - 24px, 520px); margin: 12px auto; }
+        .grid { grid-template-columns: 1fr; gap: 14px; }
+        .actions { align-items: stretch; flex-direction: column; }
+        button { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <div class="eyebrow">Risk Relay · Credit intelligence</div>
+        <h1>Make every credit decision clearer.</h1>
+        <p>Explore a model estimate using the supplied credit dataset. Complete the profile below to assess one application.</p>
+      </header>
+
+      <section class="panel" aria-labelledby="form-title">
+        <h2 id="form-title">Application profile</h2>
+        <p class="subhead">Fields marked by the form are required by the trained model.</p>
+        <form id="risk-form">
+          <div class="grid">
+            <label>Age
+              <input name="Age" type="number" min="18" max="100" value="35" required />
+            </label>
+            <label>Sex
+              <select name="Sex" required><option>female</option><option>male</option></select>
+            </label>
+            <label>Job category
+              <select name="Job" required>
+                <option value="0">Category 0</option><option value="1">Category 1</option>
+                <option value="2" selected>Category 2</option><option value="3">Category 3</option>
+              </select>
+            </label>
+            <label>Housing
+              <select name="Housing" required><option>own</option><option>free</option><option>rent</option></select>
+            </label>
+            <label>Savings account
+              <select name="Saving accounts" required>
+                <option>Not provided</option><option>little</option><option selected>moderate</option>
+                <option>quite rich</option><option>rich</option>
+              </select>
+            </label>
+            <label>Checking account
+              <select name="Checking account" required>
+                <option>Not provided</option><option selected>little</option><option>moderate</option><option>rich</option>
+              </select>
+            </label>
+            <label>Credit amount
+              <input name="Credit amount" type="number" min="250" max="18424" step="50" value="2500" required />
+            </label>
+            <label>Credit duration (months)
+              <input name="Duration" type="number" min="1" max="72" value="18" required />
+            </label>
+            <label>Loan purpose
+              <select name="Purpose" required>
+                <option>business</option><option selected>car</option><option>domestic appliances</option>
+                <option>education</option><option>furniture/equipment</option><option>radio/TV</option>
+                <option>repairs</option><option>vacation/others</option>
+              </select>
+            </label>
+          </div>
+          <div class="actions">
+            <button id="submit" type="submit">Assess credit risk</button>
+            <span id="status" class="status" role="status"></span>
+          </div>
+        </form>
+        <div id="error" class="error" role="alert"></div>
+        <div id="result" class="result" aria-live="polite">
+          <div id="result-card" class="result-card">
+            <div class="result-label">Model estimate</div>
+            <div id="risk" class="result-value"></div>
+            <div id="description"></div>
+            <div class="probabilities">
+              <span id="bad-prob"></span><span id="good-prob"></span>
+            </div>
+          </div>
+          <div class="bar" aria-hidden="true"><span id="bar"></span></div>
+        </div>
+      </section>
+      <p class="disclaimer">Demonstration only: this model can be inaccurate and must not be used as the sole basis for a lending decision, financial advice, or a substitute for fair-lending review and human assessment.</p>
+    </main>
+    <script>
+      const form = document.querySelector("#risk-form");
+      const submit = document.querySelector("#submit");
+      const statusText = document.querySelector("#status");
+      const errorBox = document.querySelector("#error");
+      const resultBox = document.querySelector("#result");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        errorBox.classList.remove("show");
+        resultBox.classList.remove("show");
+        submit.disabled = true;
+        statusText.textContent = "Scoring application…";
+
+        const formData = new FormData(form);
+        const application = Object.fromEntries(formData.entries());
+        for (const field of ["Age", "Job", "Credit amount", "Duration"]) {
+          application[field] = Number(application[field]);
+        }
+
+        try {
+          const response = await fetch("/api/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ applications: [application] }),
+          });
+          const payload = await response.json();
+          if (!response.ok) {
+            const detail = payload.detail;
+            throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail ?? payload));
+          }
+
+          const prediction = payload.predictions[0];
+          const risk = prediction["Predicted risk"];
+          const bad = prediction["Bad probability (%)"];
+          const good = prediction["Good probability (%)"];
+          document.querySelector("#result-card").classList.toggle("bad", risk === "bad");
+          document.querySelector("#risk").textContent = `${risk[0].toUpperCase()}${risk.slice(1)} risk`;
+          document.querySelector("#description").textContent =
+            `The model places this profile in the ${risk}-risk class.`;
+          document.querySelector("#bad-prob").textContent = `Bad probability: ${bad}%`;
+          document.querySelector("#good-prob").textContent = `Good probability: ${good}%`;
+          document.querySelector("#bar").style.width = `${risk === "bad" ? bad : good}%`;
+          resultBox.classList.add("show");
+          statusText.textContent = "";
+        } catch (error) {
+          errorBox.textContent = `Unable to assess this application: ${error.message}`;
+          errorBox.classList.add("show");
+          statusText.textContent = "";
+        } finally {
+          submit.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
